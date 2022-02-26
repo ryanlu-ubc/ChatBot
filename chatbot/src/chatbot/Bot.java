@@ -53,6 +53,8 @@ class Bot {
 	
 	// topic keywords which are possible to be found in user input text    
     static String[] topicKeyword = {"movie", "sport", "food", "book"};
+    
+    static String lastTopic = ""; 
 
 	//chatbot's favorites 	
     static String[] favorites = {"'The Godfather'", "skiing", "ice cream", "'Pride and Prejudice'"};
@@ -78,12 +80,15 @@ class Bot {
 		}
 		// if the user asks a hobby-related question 
 		if (rowIndex == -1 && randomIndex == -1) {
-			if (hobbyResponse(s).equals("")) {
-				 
+			
+		/*	if (hobbyResponse(s).equals("")) {
+				 checkUserHobby(s);
 			}
 			else {
 				return hobbyResponse(s);
 			}
+			*/
+			return hobbyResponse(s);
 		}
 		return outputText[rowIndex][randomIndex];
 	}
@@ -96,18 +101,66 @@ class Bot {
 		for (int i = 0; i < tokens.length; i++) {
 			for (int j = 0; j < topicKeyword.length; j++) {
 				if (tokens[i].contains(topicKeyword[j])) {
+					lastTopic = topicKeyword[j];
 					int randomIndex = (int)Math.floor(Math.random()*(fav.length-1-0+1)+0);
 					if (randomIndex == 0)
-						answer = fav[0] + topicKeyword[j] + " is " + favorites[j] + "."; 
+						answer = fav[0] + topicKeyword[j] + " is " + favorites[j] + "." + " Which " + topicKeyword[j] + " do you like the most?"; 
 					else if (randomIndex == 1)
-						answer = fav[1] + favorites[j] + " the most."; 
+						answer = fav[1] + favorites[j] + " the most." + " Which " + topicKeyword[j] + " do you like the most?"; 
 					else if (randomIndex == 2)
-						answer = fav[2] + favorites[j]+ "."; 
+						answer = fav[2] + favorites[j]+ "." + " Which " + topicKeyword[j] + " do you like the most?"; 
 				}
 			}
 		}
+		if (answer.equals(""))
+			answer = checkUserHobby(s); 
+		
 		return answer; 
 	}
+	// check if a user input includes some hobbies
+	public static String checkUserHobby(String s) {
+		String[] tokens = parse(s);
+		String fav = "";
+		String response = "";
+		for (int i = 0; i < tokens.length; i++) {
+			int randomIndex = (int)Math.floor(Math.random()*(2-1-0+1)+0);
+			if (tokens[i].toLowerCase().equals("like")) {
+				if (i+1<tokens.length)
+					fav+=tokens[i+1].toLowerCase();
+			}
+			else if (tokens[i].toLowerCase().equals("favourite") || tokens[i].toLowerCase().equals("fav")) {
+				if (i+2<tokens.length) {
+					fav+=tokens[i+2].toLowerCase();
+				}
+			}
+			if (!fav.equals(favorites[0]) || !fav.equals(favorites[1]) || !fav.equals(favorites[2]) || !fav.equals(favorites[3])) {
+				if (lastTopic.equals(topicKeyword[0])) {
+					if (randomIndex == 0) response = "I haven't watched this movie before, but I believe it's a good one!";
+					else if (randomIndex == 1) response = "Oh I have watched this movie before! I'm glad you also like it!"; 
+				}
+					
+				else if (lastTopic.equals(topicKeyword[1])) {
+					if (randomIndex == 0) response = "I haven't practised this sport before, but it sounds so much fun!";
+					else if (randomIndex == 1) response = "I have tried it before and I also think it's a good one!";
+				}
+					
+				else if (lastTopic.equals(topicKeyword[2])) {
+					if (randomIndex == 0) response = "I haven't tried this food before, maybe I should try it some day.";
+					else if (randomIndex == 1) response = "Really? I like it as well!";
+				}
+				
+				else if (lastTopic.equals(topicKeyword[3])) {
+					if (randomIndex == 0) response = "I have heard of this book before. Unfortunately, I never had the chance to read it.";
+					else if (randomIndex == 1) response = "I have read it before and I really like it!";
+				}
+			}
+			else {
+				response = "Really? I'm so glad that you also like it!"; 
+			}
+		}
+		return response; 
+	}
+
 	// parse a user input text
 	public static String[] parse(String s) {
 		String[] tokens = s.split("\\s+");
