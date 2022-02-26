@@ -21,9 +21,8 @@ class Bot {
 			//day questions
 			{"What day is it today", "What is the day today", "What's the day today"},
 			//weather questions
-			{"What's the weather like", "How is the weather like", "What is the weather like", "How's the weather like"},
-			//default
-			{"Shut up", "", "Stop talking"}
+			{"What's the weather like", "How is the weather like", "What is the weather like", "How's the weather like"}
+
 	};
 	
     static java.time.DayOfWeek dayOfWeek = java.time.LocalDate.now().getDayOfWeek();
@@ -45,9 +44,7 @@ class Bot {
 			//chatbot day answer
 			{"Today is " + dayOfWeek.toString() + ".", "It is " + dayOfWeek.toString() + " today."},
 			//chatbot weather answer
-			{"The weather is nice, not too cold, not too warm, can’t complain."},
-			//chatbot default
-			{"Sorry, I don't understand your message."}
+			{"The weather is nice, not too cold, not too warm, can’t complain."}
 
 	};
 	
@@ -80,14 +77,6 @@ class Bot {
 		}
 		// if the user asks a hobby-related question 
 		if (rowIndex == -1 && randomIndex == -1) {
-			
-		/*	if (hobbyResponse(s).equals("")) {
-				 checkUserHobby(s);
-			}
-			else {
-				return hobbyResponse(s);
-			}
-			*/
 			return hobbyResponse(s);
 		}
 		return outputText[rowIndex][randomIndex];
@@ -154,10 +143,12 @@ class Bot {
 					else if (randomIndex == 1) response = "I have read it before and I really like it!";
 				}
 			}
-			else {
+			else if (fav.equals(favorites[0]) || fav.equals(favorites[1]) || fav.equals(favorites[2]) || fav.equals(favorites[3])){
 				response = "Really? I'm so glad that you also like it!"; 
 			}
 		}
+		if (fav.equals("")) 
+			response = "Sorry, I don't understand your message. Is there anything that you want to talk about (movies, sports, foods or books) ?"; 
 		return response; 
 	}
 
