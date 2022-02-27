@@ -1,7 +1,5 @@
 package chatbot;
 import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Map;
 
 class Bot {
 	// possible user input
@@ -51,8 +49,9 @@ class Bot {
 	// topic keywords which are possible to be found in user input text    
     static String[] topicKeyword = {"movie", "sport", "food", "book"};
     
+    //last topic mentioned by user 
     static String lastTopic = ""; 
-
+    
 	//chatbot's favorites 	
     static String[] favorites = {"'The Godfather'", "skiing", "ice cream", "'Pride and Prejudice'"};
 
@@ -66,22 +65,74 @@ class Bot {
 	public static String generateResponse(String s) {
 		int rowIndex = -1; 
 		int randomIndex = -1; 
+		String response = ""; 
+
 		for (int i = 0; i < inputText.length; i++) {
 			for (int j = 0; j < inputText[i].length; j++) {
-				if (s.equals(inputText[i][j].toLowerCase()) || s.equals(inputText[i][j].toLowerCase()+"?") || s.equals(inputText[i][j].toLowerCase()+"!")) {
+				if (s.equals(inputText[i][j].toLowerCase()) || s.equals(inputText[i][j].toLowerCase()+"?") || s.equals(inputText[i][j].toLowerCase()+"!") || s.equals(inputText[i][j].toLowerCase()+".")) {
 					rowIndex = i;
 					// generate a random corresponding chatbot answer to the user input question
 				    randomIndex = (int)Math.floor(Math.random()*(outputText[i].length-1-0+1)+0);
+				    // user asks bot 'how are you'
+				    if (i == 1) {
+				    	return askFeeling(s, i, randomIndex); 
+				    }	
 				}
 			}
 		}
 		// if the user asks a hobby-related question 
-		if (rowIndex == -1 && randomIndex == -1) {
+		if (rowIndex == -1 && randomIndex == -1 && ! lastTopic.equals("feeling")) {
 			return hobbyResponse(s);
 		}
-		return outputText[rowIndex][randomIndex];
+		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("feeling")) {
+			return discussFeeling(s); 
+		}
+		response += outputText[rowIndex][randomIndex];
+		return response;
+	}
+	public static String askFeeling(String s, int rowIndex, int randomIndex) {
+		String response = outputText[rowIndex][randomIndex];
+		response += " How are you feeling today?"; 
+		lastTopic = "feeling"; 
+		return response; 
 	}
 	
+	public static String discussFeeling(String s) {
+		String[] tokens = parse(s);
+		String response = "";
+		String keywords = "";
+		int situation = 0;
+		for (String t: tokens) {
+			if (t.toLowerCase().equals("not")||t.toLowerCase().equals("don't")||t.toLowerCase().equals("good")||t.toLowerCase().equals("well")) {
+				keywords+=t;
+			}
+		}
+		if (keywords.contains("not")||keywords.contains("don't")&&keywords.contains("good")||keywords.contains("well")) {
+			return "I'm sorry to hear that. I hope chatting with me will make you feel better."; 
+		}
+		else {
+		for (int i = 0; i < tokens.length; i++) {
+			for (int j = 1; j < tokens.length; j++) {
+						if (tokens[j] .toLowerCase().equals("good") || tokens[j] .toLowerCase().equals("well") || tokens[j] .toLowerCase().equals("happy")) {
+							response = "I'm glad you're doing well today."; 
+							}
+						else if (tokens[i].toLowerCase().equals("terrible") || tokens[i].toLowerCase().equals("depressed") ||tokens[i].toLowerCase().equals("mad") || tokens[i].toLowerCase().equals("sad")) {
+							response = "I'm here with you. Remeber? You can always come to me and share with me."; 
+							situation = 1;
+							}
+						else if (tokens[i].toLowerCase().equals("dying") || tokens[i].toLowerCase().equals("suicidal") || tokens[i].toLowerCase().equals("painful")) {
+							response = "That sounds really painful and I'm concerned about you because I care. Please talk to me, I want to offer support however I can."; 
+							situation = 2; 
+							}
+					}
+
+				}
+		}
+		return response; 
+
+		}
+	
+
 	// generate responses to questions regarding hobbies
 	public static String hobbyResponse(String s) {
 		String[] tokens = parse(s);
@@ -113,7 +164,7 @@ class Bot {
 		String response = "";
 		for (int i = 0; i < tokens.length; i++) {
 			int randomIndex = (int)Math.floor(Math.random()*(2-1-0+1)+0);
-			if (tokens[i].toLowerCase().equals("like")) {
+			if (tokens[i].toLowerCase().equals("like") || tokens[i].toLowerCase().equals("love")) {
 				if (i+1<tokens.length)
 					fav+=tokens[i+1].toLowerCase();
 			}
@@ -162,14 +213,12 @@ class Bot {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("You: \t");
 		String s = sc.nextLine().toLowerCase();
-		//String str = s.replaceAll("\\s+", "");
 		while (true) {
 				  if (!s.equals("bye")) {
 					System.out.print("Bot: \t");
 					System.out.println(generateResponse(s)); 
 					System.out.print("You: \t");
 					s = sc.nextLine().toLowerCase();
-					//str = s.replaceAll(" ", "");
 					}
 				  else {
 					  System.out.println("Bot: \t" + endMessage); 
@@ -181,3 +230,4 @@ class Bot {
 	}
 
 }
+
