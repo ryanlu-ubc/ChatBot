@@ -1,13 +1,20 @@
 # ChatBot
 ChatBot for Assignment 2
+
+
 Project Description:
+
+
 The objective of this programming project is to practice team collaboration and management principles within a software engineering environment – through the creation of an interactive program. The program’s aim is to create a dynamic conversational agent that is able to interact and respond to a user’s input. Within our chosen setup, the agent will imitate an old friend and enable the user to participate in conversations centering around topics such as favourite food, hobbies, and books. The project will be completed using project management tools such as JIRA and employ Java as the object-oriented programming language.
 
 SDLC Overview:
+
+
 The chosen Software Development Life Cycle (SDLC) model for the execution of this project is the incremental/agile model. Despite the limitations of the agile model, our team found it to be the best suited option for our requirements and team setup for the following reasons:
 First and foremost, our team decided to follow an iterative approach. With this, planning is incremental and it is easier to change the process as required. Additionally the amount of analysis and documentation that has to be redone is much less than is required for the waterfall model. Lastly, we found that agile methods aligned with our team project management outlooks. Overall, making it the best choice for our team.
 
 SDLC Breakdown:
+
     ● Requirements Definition and Project Planning:
         ○ Github Creation: create a github account and team repository for the project
         ○ Criteria Itemization: itemize project demands and listed criteria
