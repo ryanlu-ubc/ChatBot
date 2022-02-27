@@ -45,3 +45,7 @@ SDLC Breakdown:
             ■ Video Approval: ensure all team members are satisfied with the video
         ○ Peer Evaluation: submit a peer evaluation for all team members
         ○ Project Submission: submit the finalized project on Canvas
+
+
+
+The WBS and Explanation are included within their own file in the Github Repository
