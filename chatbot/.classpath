@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/commons-io-2.11.0/commons-io-2.11.0.jar"/>
 	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/en-token.bin"/>
 	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/en-pos-maxent.bin"/>
+	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/en-ner-person.bin"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

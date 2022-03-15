@@ -227,15 +227,23 @@ class Bot {
 		return tokens; 
 	}
 	
+	public static boolean quit(String s) {
+		for (int i = 0; i < endText.length; i++) {
+			if (s.equals(endText[i]))
+				return true;
+		}
+		return false; 
+	}
+	
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("You: \t");
 		String s = sc.nextLine().toLowerCase();	
 	    	
-		InputStream tokenModelIn = null;
         InputStream posModelIn = null;
+        
 		while (true) {
-				  if (!s.equals("bye")) {
+				  if (!quit(s)) {
 
 			            String tokens[] = parse(s);			            
 			            
@@ -248,8 +256,6 @@ class Bot {
 			            POSTaggerME posTagger = new POSTaggerME(posModel);
 			            // Tagger tagging the tokens
 			            String tags[] = posTagger.tag(tokens);
-			            
-			            
 			            // Getting the probabilities of the tags given to the tokens
 			            double probs[] = posTagger.probs();
 			             
