@@ -1,7 +1,25 @@
 package chatbot;
 import java.util.Scanner;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import net.didion.jwnl.*;
+import net.didion.jwnl.data.*;
+import net.didion.jwnl.dictionary.Dictionary;
+import opennlp.tools.*;
+import opennlp.tools.postag.POSModel;
+import opennlp.tools.postag.POSSample;
+import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.tokenize.Tokenizer;
+import opennlp.tools.tokenize.TokenizerME;
+import opennlp.tools.tokenize.TokenizerModel;
+
+import org.apache.commons.io.*;
 
 class Bot {
+	
+	//WordNet dictionary 
+	Dictionary dict = Dictionary.getInstance();
+	
 	// possible user input
 	static String[][] inputText = {
 			//standard greetings
@@ -209,12 +227,38 @@ class Bot {
 		return tokens; 
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("You: \t");
-		String s = sc.nextLine().toLowerCase();
+		String s = sc.nextLine().toLowerCase();	
+	    	
+		InputStream tokenModelIn = null;
+        InputStream posModelIn = null;
 		while (true) {
 				  if (!s.equals("bye")) {
+
+			            String tokens[] = parse(s);			            
+			            
+			            // Parts-Of-Speech Tagging
+			            // reading parts-of-speech model to a stream 
+			            posModelIn = new FileInputStream("en-pos-maxent.bin");
+			            // loading the parts-of-speech model from stream
+			            POSModel posModel = new POSModel(posModelIn);
+			            // initializing the parts-of-speech tagger with model 
+			            POSTaggerME posTagger = new POSTaggerME(posModel);
+			            // Tagger tagging the tokens
+			            String tags[] = posTagger.tag(tokens);
+			            
+			            
+			            // Getting the probabilities of the tags given to the tokens
+			            double probs[] = posTagger.probs();
+			             
+			            System.out.println("Token\t:\tTag\t:\tProbability\n---------------------------------------------");
+			            for(int i=0;i<tokens.length;i++){
+			                System.out.println(tokens[i]+"\t:\t"+tags[i]+"\t:\t"+probs[i]);
+			            }
+					  
+					  
 					System.out.print("Bot: \t");
 					System.out.println(generateResponse(s)); 
 					System.out.print("You: \t");
