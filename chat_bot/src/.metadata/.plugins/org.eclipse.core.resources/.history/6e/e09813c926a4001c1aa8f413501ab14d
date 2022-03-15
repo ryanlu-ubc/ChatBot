@@ -13,6 +13,9 @@ import opennlp.tools.util.Span;
 
 class Bot {
 	
+	//WordNet dictionary 
+	Dictionary dict = Dictionary.getInstance();
+	
 	// possible user input
 	static String[][] inputText = {
 			//standard greetings
@@ -258,7 +261,7 @@ class Bot {
 			            String tags[] = tagger.tag(tokens);
 			            
 			            // printing method for testing POS tagging feature
-			            System.out.println("Token\t:\tTag\t\n---------------");
+			            System.out.println("Token\t:\tTag\t:\n---------------------------------------------");
 			            for(int i=0;i<tokens.length;i++){
 			                System.out.println(tokens[i]+"\t:\t"+tags[i]);
 			            }

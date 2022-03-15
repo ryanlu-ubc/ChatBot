@@ -6,12 +6,11 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/jwnl14-rc2/jwnl.jar"/>
-	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/apache-opennlp-1.9.4/lib/opennlp-tools-1.9.4.jar"/>
-	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/apache-opennlp-1.9.4/lib/opennlp-uima-1.9.4.jar"/>
-	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/commons-io-2.11.0/commons-io-2.11.0.jar"/>
-	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/en-token.bin"/>
-	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/en-pos-maxent.bin"/>
-	<classpathentry kind="lib" path="/Users/huqingyan/Documents/GitHub/ChatBot/chatbot/en-ner-person.bin"/>
+	<classpathentry kind="lib" path="apache-opennlp-1.9.4/lib/opennlp-tools-1.9.4.jar"/>
+	<classpathentry kind="lib" path="apache-opennlp-1.9.4/lib/opennlp-uima-1.9.4.jar"/>
+	<classpathentry kind="lib" path="jwnl14-rc2/jwnl.jar"/>
+	<classpathentry kind="lib" path="en-ner-person.bin"/>
+	<classpathentry kind="lib" path="en-pos-maxent.bin"/>
+	<classpathentry kind="lib" path="en-token.bin"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

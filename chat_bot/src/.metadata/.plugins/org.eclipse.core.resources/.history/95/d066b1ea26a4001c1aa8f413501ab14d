@@ -13,6 +13,9 @@ import opennlp.tools.util.Span;
 
 class Bot {
 	
+	//WordNet dictionary 
+	Dictionary dict = Dictionary.getInstance();
+	
 	// possible user input
 	static String[][] inputText = {
 			//standard greetings

@@ -1,6 +1,7 @@
 package chatbot;
 import java.util.Scanner;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import net.didion.jwnl.*;
 import net.didion.jwnl.data.*;
 import net.didion.jwnl.dictionary.Dictionary;
@@ -8,10 +9,17 @@ import opennlp.tools.*;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.postag.POSModel;
+import opennlp.tools.postag.POSSample;
 import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.tokenize.Tokenizer;
+import opennlp.tools.tokenize.TokenizerME;
+import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.Span;
 
 class Bot {
+	
+	//WordNet dictionary 
+	Dictionary dict = Dictionary.getInstance();
 	
 	// possible user input
 	static String[][] inputText = {
@@ -240,8 +248,7 @@ class Bot {
 		System.out.print("You: \t");
 		String s = sc.nextLine().toLowerCase();	
 	    	
-        InputStream streamModel = null;
-        
+        InputStream posModelIn = null;
 		while (true) {
 				  if (!isQuit(s)) {
 
@@ -249,28 +256,32 @@ class Bot {
 			            
 			            // Parts-Of-Speech Tagging
 			            // reading parts-of-speech model to a stream 
-			            streamModel = new FileInputStream("en-pos-maxent.bin");
+			            posModelIn = new FileInputStream("en-pos-maxent.bin");
 			            // loading the parts-of-speech model from stream
-			            POSModel model = new POSModel(streamModel);
+			            POSModel posModel = new POSModel(posModelIn);
 			            // initializing the parts-of-speech tagger with model 
-			            POSTaggerME tagger = new POSTaggerME(model);
+			            POSTaggerME posTagger = new POSTaggerME(posModel);
 			            // Tagger tagging the tokens
-			            String tags[] = tagger.tag(tokens);
+			            String tags[] = posTagger.tag(tokens);
 			            
-			            // printing method for testing POS tagging feature
-			            System.out.println("Token\t:\tTag\t\n---------------");
+			            
+			            // Getting the probabilities of the tags given to the tokens
+			            double probs[] = posTagger.probs();
+			             
+			            System.out.println("Token\t:\tTag\t:\tProbability\n---------------------------------------------");
 			            for(int i=0;i<tokens.length;i++){
-			                System.out.println(tokens[i]+"\t:\t"+tags[i]);
+			                System.out.println(tokens[i]+"\t:\t"+tags[i]+"\t:\t"+probs[i]);
 			            }
 					
 			            InputStream inputStream = new FileInputStream("en-ner-person.bin"); 
-			            TokenNameFinderModel nameModel = new TokenNameFinderModel(inputStream);     
+			            TokenNameFinderModel model = new TokenNameFinderModel(inputStream);
+			                 
 			            //Instantiating the NameFinder class 
-			            NameFinderME nameFinder = new NameFinderME(nameModel);
-			            // *** only works for names with the first letter capitalized
+			            NameFinderME nameFinder = new NameFinderME(model);
+			            // *** only works for names with the first letter capitalized  
+			            
 			            Span nameSpans[] = nameFinder.find(capitalize(tokens)); 
 			            
-			            // printing method for testing NER feature
 			            for(Span sp: nameSpans) 
 			            	System.out.println("the name is " + sp.toString());  
 					  
