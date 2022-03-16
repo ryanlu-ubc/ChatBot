@@ -1,7 +1,6 @@
-package chatbot;
 import java.util.Scanner;
 
-class Bot {
+public class Bot {
 	// possible user input
 	static String[][] inputText = {
 			//standard greetings
@@ -226,7 +225,7 @@ class Bot {
 				  }
 			
 		}
-		sc.close();
+		sc.close();	
 	}
 
 }
