@@ -61,7 +61,7 @@ public class Bot {
     static String endMessage = "It's very nice to chat with you. Looking forward to talking with you next time!";
 		
 	// generate responses to usual questions 
-	public static String generateResponse(String s) {
+	public String generateResponse(String s) {
 		int rowIndex = -1; 
 		int randomIndex = -1; 
 		String response = ""; 
@@ -215,7 +215,7 @@ public class Bot {
 		while (true) {
 				  if (!s.equals("bye")) {
 					System.out.print("Bot: \t");
-					System.out.println(generateResponse(s)); 
+					//System.out.println(generateResponse(s)); 
 					System.out.print("You: \t");
 					s = sc.nextLine().toLowerCase();
 					}
