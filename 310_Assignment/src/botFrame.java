@@ -98,7 +98,6 @@ public class botFrame extends Chatbot implements ActionListener{
 	public void answer(String s) {
 		test.append("test: " + s + "\n");
 		chatBox.setText("");
-		botResponded();
 	}
 
 	@Override
@@ -112,10 +111,9 @@ public class botFrame extends Chatbot implements ActionListener{
 		}
 		else if(e.getSource()==chatButton) {
 			message = chatBox.getText();
-			super.input = message;
-			userResponded();
-			test.append("ME:" + message + "\n");
+			test.append("ME: " + message + "\n");
 			chatBox.setText("");
+			userResponded(message);
 //			outputBox.setText(message);
 
 //			if(message.contains(inputText)) {
