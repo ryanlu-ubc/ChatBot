@@ -46,6 +46,6 @@ SDLC Breakdown:
         ○ Peer Evaluation: submit a peer evaluation for all team members
         ○ Project Submission: submit the finalized project on Canvas
 
-
+Within our second iteration of the project, we decided to follow the same SDLC work cycle, with minor changes. The reasoning behind this is we found the new project requirements were similar to the last, and since our life cycle worked effectively for us last time, it was in our best interest to use it again.  
 
 The WBS and Explanation are included within their own file in the Github Repository
