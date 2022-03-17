@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="en-ner-person.bin"/>
 	<classpathentry kind="lib" path="en-pos-maxent.bin"/>
 	<classpathentry kind="lib" path="en-token.bin"/>
+	<classpathentry kind="lib" path="commons-io-2.11.0/commons-io-2.11.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

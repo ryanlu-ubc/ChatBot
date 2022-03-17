@@ -1,14 +1,18 @@
 package chatbot;
+import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Scanner;
 import java.io.*;
 import net.didion.jwnl.*;
 import net.didion.jwnl.data.*;
 import net.didion.jwnl.dictionary.Dictionary;
-import opennlp.tools.*;
+import opennlp.tools.dictionary.Index;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.tokenize.TokenizerME;
+import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.Span;
 
 class Bot {
@@ -45,7 +49,7 @@ class Bot {
 			//chatbot age answer
 			{"I'm less than one year old."},
 			//chatbot name answer
-			{"My name is Alfrie.", "I'm Alfrie.", "You can call me Alfrie."},
+			{"My name is Adrian.", "I'm Adrian.", "You can call me Adrian."},
 			//chatbot location answer
 			{"I live in British Columbia, Canada."},
 			//chatbot date answer
@@ -71,9 +75,33 @@ class Bot {
 
 	//chatbot ending chat messages
     static String endMessage = "It's very nice to chat with you. Looking forward to talking with you next time!";
-		
+	
+    //tokens
+    static String[] tokens = {};
+    
+    //tags
+    static String[] tags = {}; 
+    
+    //nouns
+    static ArrayList<String> noun = new ArrayList<String>();
+    
+    //verb
+    static ArrayList<String> verb = new ArrayList<String>();
+    
+    //adj
+    static ArrayList<String> adj = new ArrayList<String>();
+    
+    //adv
+    static ArrayList<String> adv = new ArrayList<String>();
+    
+    //interrogative
+    static ArrayList<String> wh = new ArrayList<String>();
+    
+    //user name 
+    static String userName = ""; 
+     
 	// generate responses to usual questions 
-	public static String generateResponse(String s) {
+	public static String generateResponse(String s) throws Exception {
 		int rowIndex = -1; 
 		int randomIndex = -1; 
 		String response = ""; 
@@ -108,37 +136,41 @@ class Bot {
 		return response; 
 	}
 	
-	public static String discussFeeling(String s) {
-		String[] tokens = parse(s);
+	public static String discussFeeling(String s) throws Exception{
+		
 		String response = "";
 		String keywords = "";
 		int situation = 0;
-		for (String t: tokens) {
-			if (t.toLowerCase().equals("not")||t.toLowerCase().equals("don't")||t.toLowerCase().equals("good")||t.toLowerCase().equals("well")) {
-				keywords+=t;
+		
+		//if user input contains 'not' or 'don't' or ''t''
+		if (isNegation()) {
+			for (int i = 0; i < adj.size(); i++) {
+				if (adj.get(i).toLowerCase().equals("good") || adj.get(i).toLowerCase().equals("well")) {
+					return "I'm sorry to hear that. I hope chatting with me will make you feel better."; 
+				}
+				else if (adj.get(i).toLowerCase().equals("bad")) {
+					return "I'm glad you're doing well today!"; 
+				}
 			}
 		}
-		if (keywords.contains("not")||keywords.contains("don't")&&keywords.contains("good")||keywords.contains("well")) {
-			return "I'm sorry to hear that. I hope chatting with me will make you feel better."; 
-		}
-		else {
-		for (int i = 0; i < tokens.length; i++) {
-			for (int j = 1; j < tokens.length; j++) {
-						if (tokens[j] .toLowerCase().equals("good") || tokens[j] .toLowerCase().equals("well") || tokens[j] .toLowerCase().equals("happy")) {
-							response = "I'm glad you're doing well today."; 
-							}
-						else if (tokens[i].toLowerCase().equals("terrible") || tokens[i].toLowerCase().equals("depressed") ||tokens[i].toLowerCase().equals("mad") || tokens[i].toLowerCase().equals("sad")) {
-							response = "I'm here with you. Remeber? You can always come to me and share with me."; 
-							situation = 1;
-							}
-						else if (tokens[i].toLowerCase().equals("dying") || tokens[i].toLowerCase().equals("suicidal") || tokens[i].toLowerCase().equals("painful")) {
-							response = "That sounds really painful and I'm concerned about you because I care. Please talk to me, I want to offer support however I can."; 
-							situation = 2; 
-							}
-					}
 
-				}
+		else {
+		
+		for (int i = 0; i < adj.size(); i++) {
+			//user is doing well
+			if (adj.get(i).toLowerCase().equals("good") || adj.get(i).toLowerCase().equals("well") || adj.get(i).toLowerCase().equals("happy") || adj.get(i).toLowerCase().equals("great")) {
+				response = "I'm glad you're doing well today!"; 
+			}
+			else if (adj.get(i).toLowerCase().equals("mad") || adj.get(i).toLowerCase().equals("sad") || adj.get(i).toLowerCase().equals("depressed") || adj.get(i).toLowerCase().equals("terrible")) {
+				response = "I'm here with you. Remeber? You can always come to me and share with me."; 
+				situation = 1; 
+			}
+			else if (adj.get(i).toLowerCase().equals("dying") || adj.get(i).toLowerCase().equals("painful") || adj.get(i).toLowerCase().equals("suicidal")) {
+				response = "That sounds really painful and I'm concerned about you because I care. Please talk to me, I want to offer support however I can."; 
+				situation = 2; 
+			}
 		}
+		}	
 		return response; 
 
 		}
@@ -146,12 +178,12 @@ class Bot {
 
 	// generate responses to questions regarding hobbies
 	public static String hobbyResponse(String s) {
-		String[] tokens = parse(s);
+		
 		String answer = "";
 		String[] fav = {"My favourite ", "I like ", "I really like "}; 
-		for (int i = 0; i < tokens.length; i++) {
+		for (int i = 0; i < noun.size(); i++) {
 			for (int j = 0; j < topicKeyword.length; j++) {
-				if (tokens[i].contains(topicKeyword[j])) {
+				if (noun.get(i).toLowerCase().equals(topicKeyword[j]) && wh.get(0).toLowerCase().equals("what")) {
 					lastTopic = topicKeyword[j];
 					int randomIndex = (int)Math.floor(Math.random()*(fav.length-1-0+1)+0);
 					if (randomIndex == 0)
@@ -170,53 +202,70 @@ class Bot {
 	}
 	// check if a user input includes some hobbies
 	public static String checkUserHobby(String s) {
-		String[] tokens = parse(s);
+		
 		String fav = "";
-		String response = "";
-		for (int i = 0; i < tokens.length; i++) {
-			int randomIndex = (int)Math.floor(Math.random()*(2-1-0+1)+0);
-			if (tokens[i].toLowerCase().equals("like") || tokens[i].toLowerCase().equals("love")) {
-				if (i+1<tokens.length)
-					fav+=tokens[i+1].toLowerCase();
-			}
-			else if (tokens[i].toLowerCase().equals("favourite") || tokens[i].toLowerCase().equals("fav")) {
-				if (i+2<tokens.length) {
-					fav+=tokens[i+2].toLowerCase();
-				}
-			}
-			if (!fav.equals(favorites[0]) || !fav.equals(favorites[1]) || !fav.equals(favorites[2]) || !fav.equals(favorites[3])) {
-				if (lastTopic.equals(topicKeyword[0])) {
-					if (randomIndex == 0) response = "I haven't watched this movie before, but I believe it's a good one!";
-					else if (randomIndex == 1) response = "Oh I have watched this movie before! I'm glad you also like it!"; 
-				}
-					
-				else if (lastTopic.equals(topicKeyword[1])) {
-					if (randomIndex == 0) response = "I haven't practised this sport before, but it sounds so much fun!";
-					else if (randomIndex == 1) response = "I have tried it before and I also think it's a good one!";
-				}
-					
-				else if (lastTopic.equals(topicKeyword[2])) {
-					if (randomIndex == 0) response = "I haven't tried this food before, maybe I should try it some day.";
-					else if (randomIndex == 1) response = "Really? I like it as well!";
-				}
-				
-				else if (lastTopic.equals(topicKeyword[3])) {
-					if (randomIndex == 0) response = "I have heard of this book before. Unfortunately, I never had the chance to read it.";
-					else if (randomIndex == 1) response = "I have read it before and I really like it!";
-				}
-			}
-			else if (fav.equals(favorites[0]) || fav.equals(favorites[1]) || fav.equals(favorites[2]) || fav.equals(favorites[3])){
-				response = "Really? I'm so glad that you also like it!"; 
+		String response = "";	
+		
+		//check verbs: "like", "love"
+		if (!isNegation()) {
+		for (int i = 0; i < verb.size(); i ++) {
+			if (verb.get(i).toLowerCase().equals("like") || verb.get(i).toLowerCase().equals("love")) {
+				response = userLikeHobby();
 			}
 		}
+		//check adj: "favo(u)rite
+		for (int i = 0; i < adj.size(); i ++) {
+			if (adj.get(i).toLowerCase().equals("favourite") || adj.get(i).toLowerCase().equals("favorite")) {
+				response = userLikeHobby();
+			}
+		}
+		//check noun: fav
+		for (int i = 0; i < noun.size(); i ++) {
+			if (noun.get(i).toLowerCase().equals("fav")) {
+				response = userLikeHobby();
+			}
+		}
+		}
+		
 		if (fav.equals("")) 
 			response = "Sorry, I don't understand your message. Is there anything that you want to talk about (movies, sports, foods or books) ?"; 
 		return response; 
 	}
-
+	
+	//"movie", "sport", "food", "book"
+	public static String userLikeHobby() {
+		String response = "";
+		int randomIndex = (int)Math.floor(Math.random()*(2-1-0+1)+0);
+		if (lastTopic.equals(topicKeyword[0])) {
+			if (randomIndex == 0) response = "I haven't watched this movie before, but I believe it's a good one!";
+			else if (randomIndex == 1) response = "Oh I have watched this movie before! I'm glad you also like it!"; 
+		}
+		
+		else if (lastTopic.equals(topicKeyword[1])) {
+			if (randomIndex == 0) response = "I haven't practised this sport before, but it sounds so much fun!";
+			else if (randomIndex == 1) response = "I have tried it before and I also think it's a good one!";
+		}
+			
+		else if (lastTopic.equals(topicKeyword[2])) {
+			if (randomIndex == 0) response = "I haven't tried this food before, maybe I should try it some day.";
+			else if (randomIndex == 1) response = "Really? I like it as well!";
+		}
+		
+		else if (lastTopic.equals(topicKeyword[3])) {
+			if (randomIndex == 0) response = "I have heard of this book before. Unfortunately, I never had the chance to read it.";
+			else if (randomIndex == 1) response = "I have read it before and I really like it!";
+		}
+		return response; 
+	}
+	
 	// parse a user input text
-	public static String[] parse(String s) {
-		String[] tokens = s.split("\\s+");
+	public static String[] parse(String s) throws Exception{
+		InputStream inputTokenizer = null; 
+		inputTokenizer = new FileInputStream("en-token.bin");
+        TokenizerModel tokenModel = new TokenizerModel(inputTokenizer);
+        TokenizerME tokenizer = new TokenizerME(tokenModel); 
+        tokens = tokenizer.tokenize(s); 
+        
 		return tokens; 
 	}
 	
@@ -235,48 +284,131 @@ class Bot {
 		return s;
 	}
 	
+	// lemmatize tokens 
+	public static void lemmatize(String[] tokens, String[] tags) {
+		for (int i = 0; i < tags.length; i++) {
+			String t = tags[i]; 
+			String k = tokens[i]; 
+			// if k is a verb
+			if (t.startsWith("V")) {
+				verb.add(k);
+			}
+			// if k is an adj
+			else if (t.startsWith("J")) {
+				adj.add(k);
+			}
+			// if k is an adv
+			else if (t.startsWith("R")) {
+				adv.add(k);
+			}
+			// if k is an wh-question word
+			else if (t.startsWith("W")) {
+				wh.add(k);
+			}
+			// if k is a noun 
+			else if (t.startsWith("N")) {
+				noun.add(k);
+			}
+		}
+	}
+	
+	public static void printAL() {
+		System.out.print("Verbs: ");
+		for (String v: verb) {
+			System.out.print(v + " ");
+		}
+		System.out.print("\n");
+		
+		System.out.print("Adj: ");
+		for (String ad: adj) {
+			System.out.print(ad + " ");
+		}
+		System.out.print("\n");
+		
+		System.out.print("Adv: ");
+		for (String ad: adv) {
+			System.out.print(ad + " ");
+		}
+		System.out.print("\n");
+		System.out.print("Wh: ");
+		for (String w: wh) {
+			System.out.print(w + " ");
+		}
+		System.out.print("\n");
+		
+	}
+	
+	public static void clearAllAL() {
+		noun.removeAll(noun);
+		verb.removeAll(verb);
+		adj.removeAll(adj);
+		adv.removeAll(adv);
+		wh.removeAll(wh);
+		return; 
+	}
+	
+	public static boolean isNegation() {
+		for (int i = 0; i < adv.size(); i++) {
+			if (adv.get(i).toLowerCase().equals("'t") || adv.get(i).toLowerCase().equals("not")) {
+				return true;
+			}
+		}
+		return false; 
+	}
+	
+	public static void POSTagging() throws Exception{
+        InputStream streamModel = new FileInputStream("en-pos-maxent.bin");
+        POSModel model = new POSModel(streamModel);
+        POSTaggerME tagger = new POSTaggerME(model);
+        tags = tagger.tag(tokens);
+        
+        // printing method for testing POS tagging feature
+        System.out.println("Token\t:\tTag\t\n----------------------");
+        for(int i=0;i<tokens.length;i++){
+            System.out.println(tokens[i]+"\t:\t"+tags[i]);
+        }
+	}
+	
+	public static void personNER() throws Exception{
+		InputStream inputStream = new FileInputStream("en-ner-person.bin"); 
+        TokenNameFinderModel nameModel = new TokenNameFinderModel(inputStream);     
+        //Instantiating the NameFinder class 
+        NameFinderME nameFinder = new NameFinderME(nameModel);
+        // *** only works for names with the first letter capitalized
+        Span personNameSpans[] = nameFinder.find(capitalize(tokens)); 
+        // printing method for testing NER feature
+
+        for(Span sp: personNameSpans) 
+        	System.out.println("the name is " + sp.toString() + "  " + tokens[sp.getStart()]);
+        
+	}
+	
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("You: \t");
 		String s = sc.nextLine().toLowerCase();	
-	    	
-        InputStream streamModel = null;
-        
+		
 		while (true) {
 				  if (!isQuit(s)) {
-
-			            String tokens[] = parse(s);			            
-			            
-			            // Parts-Of-Speech Tagging
-			            // reading parts-of-speech model to a stream 
-			            streamModel = new FileInputStream("en-pos-maxent.bin");
-			            // loading the parts-of-speech model from stream
-			            POSModel model = new POSModel(streamModel);
-			            // initializing the parts-of-speech tagger with model 
-			            POSTaggerME tagger = new POSTaggerME(model);
-			            // Tagger tagging the tokens
-			            String tags[] = tagger.tag(tokens);
-			            
-			            // printing method for testing POS tagging feature
-			            System.out.println("Token\t:\tTag\t\n----------------------");
-			            for(int i=0;i<tokens.length;i++){
-			                System.out.println(tokens[i]+"\t:\t"+tags[i]);
-			            }
+					  	
+					  	tokens = parse(s);
+					  	
+					  	//POS tagging
+			            POSTagging();
 					
-			            InputStream inputStream = new FileInputStream("en-ner-person.bin"); 
-			            TokenNameFinderModel nameModel = new TokenNameFinderModel(inputStream);     
-			            //Instantiating the NameFinder class 
-			            NameFinderME nameFinder = new NameFinderME(nameModel);
-			            // *** only works for names with the first letter capitalized
-			            Span nameSpans[] = nameFinder.find(capitalize(tokens)); 
+			            //person named entity recognition 
+			            personNER();
 			            
-			            // printing method for testing NER feature
-			            for(Span sp: nameSpans) 
-			            	System.out.println("the name is " + sp.toString());  
-					  
+			            //categorize terms based on their lemmas
+			            lemmatize(tokens, tags);
+			            
+			            //print each lemma arraylist for testing 
+			            printAL();
+  
 					System.out.print("Bot: \t");
 					System.out.println(generateResponse(s)); 
 					System.out.print("You: \t");
+		    		clearAllAL(); 
 					s = sc.nextLine().toLowerCase();
 					}
 				  else {
@@ -287,5 +419,7 @@ class Bot {
 		}
 		
 	}
-
 }
+
+
+
