@@ -59,8 +59,6 @@ class Bot {
 	// topic keywords which are possible to be found in user input text    
     static String[] topicKeyword = {"movie", "sport", "food", "book"};
     
-    static String[] topicKeywords = {"movies", "sports", "foods", "books"};
-    
     //last topic mentioned by user 
     static String lastTopic = ""; 
     
@@ -140,13 +138,13 @@ class Bot {
 		if (rowIndex == -1 && randomIndex == -1 && ! lastTopic.equals("feeling") && ! lastTopic.equals("name") && !lastTopic.equals("location") && !isThank()) {
 			return hobbyResponse(s);
 		}
-		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("feeling") && !isThank()) {
+		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("feeling")) {
 			return discussFeeling(s); 
 		}
-		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("name") && !isThank()) {
+		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("name")) {
 			return discussName(s); 
 		}
-		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("location") && !isThank()) {
+		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("location")) {
 			return discussLocation(s); 
 		}
 		else if (rowIndex == -1 && randomIndex == -1 && isThank()) {
@@ -230,8 +228,7 @@ class Bot {
 				situation = 2; 
 			}
 		}
-		}
-		lastTopic = "";
+		}	
 		return response; 
 
 		}
@@ -247,7 +244,6 @@ class Bot {
 		else {
 			response = meet[randomIndex]; 
 		}
-		lastTopic = "";
 		return response; 
 	}
 	
@@ -267,7 +263,6 @@ class Bot {
 		else {
 			response = "I haven't been there before, but I hope I could go there one day!"; 
 		}
-		lastTopic = "";
 		return response; 
 	}
 
@@ -278,7 +273,7 @@ class Bot {
 		String[] fav = {"My favourite ", "I like ", "I really like "}; 
 		for (int i = 0; i < noun.size(); i++) {
 			for (int j = 0; j < topicKeyword.length; j++) {
-				if ((noun.get(i).toLowerCase().equals(topicKeyword[j]) || noun.get(i).toLowerCase().equals(topicKeywords[j]))) {
+				if (noun.get(i).toLowerCase().equals(topicKeyword[j]) && wh.get(0).toLowerCase().equals("what")) {
 					lastTopic = topicKeyword[j];
 					int randomIndex = (int)Math.floor(Math.random()*(fav.length-1-0+1)+0);
 					if (randomIndex == 0)
@@ -303,7 +298,6 @@ class Bot {
 		
 		//check verbs: "like", "love"
 		if (!isNegation()) {
-
 		for (int i = 0; i < verb.size(); i ++) {
 			if (verb.get(i).toLowerCase().equals("like") || verb.get(i).toLowerCase().equals("love")) {
 				response = userLikeHobby();
@@ -322,6 +316,9 @@ class Bot {
 			}
 		}
 		}
+		
+		if (fav.equals("")) 
+			response = generateOutMessage();
 		return response; 
 	}
 	
@@ -334,28 +331,25 @@ class Bot {
 	public static String userLikeHobby() {
 		String response = "";
 		int randomIndex = (int)Math.floor(Math.random()*(2-1-0+1)+0);
-		if (lastTopic.equals(topicKeyword[0]) || lastTopic.equals(topicKeywords[0])) {
+		if (lastTopic.equals(topicKeyword[0])) {
 			if (randomIndex == 0) response = "I haven't watched this movie before, but I believe it's a good one!";
 			else if (randomIndex == 1) response = "Oh I have watched this movie before! I'm glad you also like it!"; 
 		}
 		
-		else if (lastTopic.equals(topicKeyword[1]) || lastTopic.equals(topicKeywords[1])) {
+		else if (lastTopic.equals(topicKeyword[1])) {
 			if (randomIndex == 0) response = "I haven't practised this sport before, but it sounds so much fun!";
 			else if (randomIndex == 1) response = "I have tried it before and I also think it's a good one!";
 		}
 			
-		else if (lastTopic.equals(topicKeyword[2]) || lastTopic.equals(topicKeywords[2])) {
+		else if (lastTopic.equals(topicKeyword[2])) {
 			if (randomIndex == 0) response = "I haven't tried this food before, maybe I should try it some day.";
 			else if (randomIndex == 1) response = "Really? I like it as well!";
 		}
 		
-		else if (lastTopic.equals(topicKeyword[3]) || lastTopic.equals(topicKeywords[3])) {
+		else if (lastTopic.equals(topicKeyword[3])) {
 			if (randomIndex == 0) response = "I have heard of this book before. Unfortunately, I never had the chance to read it.";
 			else if (randomIndex == 1) response = "I have read it before and I really like it!";
 		}
-		else
-			return generateOutMessage();
-		
 		return response; 
 	}
 	
@@ -463,14 +457,11 @@ class Bot {
         POSTaggerME tagger = new POSTaggerME(model);
         tags = tagger.tag(tokens);
         
-        /*
         // printing method for testing POS tagging feature
         System.out.println("Token\t:\tTag\t\n----------------------");
         for(int i=0;i<tokens.length;i++){
             System.out.println(tokens[i]+"\t:\t"+tags[i]);
         }
-        */ 
-        
 	}
 	
 	public static boolean personNER() throws Exception{
@@ -479,6 +470,7 @@ class Bot {
         NameFinderME nameFinder = new NameFinderME(nameModel);
         // *** only works for names with the first letter capitalized
         Span personNameSpans[] = nameFinder.find(capitalize(tokens)); 
+        
         
         // printing method for testing NER feature
         for(Span sp: personNameSpans) {
@@ -503,6 +495,7 @@ class Bot {
         NameFinderME nameFinder = new NameFinderME(nameModel);
         // *** only works for names with the first letter capitalized
         Span locationNameSpans[] = nameFinder.find(capitalize(tokens)); 
+        
         
         // printing method for testing NER feature
         
@@ -545,7 +538,7 @@ class Bot {
 			            lemmatize(tokens, tags);
 			            
 			            //print each lemma arraylist for testing 
-			            //printAL();
+			            printAL();
   
 					System.out.print("Bot: \t");
 					System.out.println(generateResponse(s)); 

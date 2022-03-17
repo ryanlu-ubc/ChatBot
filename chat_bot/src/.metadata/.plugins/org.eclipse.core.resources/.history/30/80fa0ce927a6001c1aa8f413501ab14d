@@ -278,7 +278,7 @@ class Bot {
 		String[] fav = {"My favourite ", "I like ", "I really like "}; 
 		for (int i = 0; i < noun.size(); i++) {
 			for (int j = 0; j < topicKeyword.length; j++) {
-				if ((noun.get(i).toLowerCase().equals(topicKeyword[j]) || noun.get(i).toLowerCase().equals(topicKeywords[j]))) {
+				if ((noun.get(i).toLowerCase().equals(topicKeyword[j]) || noun.get(i).toLowerCase().equals(topicKeywords[j])) && (verb.get(0).equals("do") || noun.get(0).toLowerCase().equals("what") || wh.get(0).toLowerCase().equals("which") ) ) {
 					lastTopic = topicKeyword[j];
 					int randomIndex = (int)Math.floor(Math.random()*(fav.length-1-0+1)+0);
 					if (randomIndex == 0)
@@ -480,6 +480,7 @@ class Bot {
         // *** only works for names with the first letter capitalized
         Span personNameSpans[] = nameFinder.find(capitalize(tokens)); 
         
+        
         // printing method for testing NER feature
         for(Span sp: personNameSpans) {
         	//System.out.println("the name is " + sp.toString() + "  " + tokens[sp.getStart()]);
@@ -503,6 +504,7 @@ class Bot {
         NameFinderME nameFinder = new NameFinderME(nameModel);
         // *** only works for names with the first letter capitalized
         Span locationNameSpans[] = nameFinder.find(capitalize(tokens)); 
+        
         
         // printing method for testing NER feature
         
