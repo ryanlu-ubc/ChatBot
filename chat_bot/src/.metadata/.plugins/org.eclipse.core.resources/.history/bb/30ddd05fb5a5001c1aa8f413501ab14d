@@ -76,15 +76,6 @@ class Bot {
 	//chatbot ending chat messages
     static String endMessage = "It's very nice to chat with you. Looking forward to talking with you next time!";
 	
-    //chatbot can't understand user input
-    static String[] outMessage = {"Hmm, I don't get that. Wanna talk about sports or food with me?", 
-    		"Sorry, I don't understand your message. "
-    		+ "Is there anything that you want to talk about (movies, sports, foods or books) ?",
-    		"Sorry, I don't get this! I would like to discuss any of the following topics that might interest you: movies, sports, foods or books.", 
-    		"Hmm, sorry I don't get that. Do you wanna talk about movies or books with me?",
-    		"Sorry, I don't understand that. Do you want to talk about movies, sports, foods or books?"
-    };
-    
     //tokens
     static String[] tokens = {};
     
@@ -124,23 +115,16 @@ class Bot {
 				    // user asks bot 'how are you'
 				    if (i == 1) {
 				    	return askFeeling(s, i, randomIndex); 
-				    }
-				    // user asks bot 'what's your name'
-				    else if (i == 3) {
-				    	return askName(s, i, randomIndex);
-				    }
+				    }	
 				}
 			}
 		}
 		// if the user asks a hobby-related question 
-		if (rowIndex == -1 && randomIndex == -1 && ! lastTopic.equals("feeling") && ! lastTopic.equals("name")) {
+		if (rowIndex == -1 && randomIndex == -1 && ! lastTopic.equals("feeling")) {
 			return hobbyResponse(s);
 		}
 		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("feeling")) {
 			return discussFeeling(s); 
-		}
-		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("name")) {
-			return discussName(s); 
 		}
 		response += outputText[rowIndex][randomIndex];
 		return response;
@@ -149,13 +133,6 @@ class Bot {
 		String response = outputText[rowIndex][randomIndex];
 		response += " How are you feeling today?"; 
 		lastTopic = "feeling"; 
-		return response; 
-	}
-	
-	public static String askName(String s, int rowIndex, int randomIndex) {
-		String response = outputText[rowIndex][randomIndex];
-		response += " What's your name?"; 
-		lastTopic = "name"; 
 		return response; 
 	}
 	
@@ -198,19 +175,6 @@ class Bot {
 
 		}
 	
-	public static String discussName (String s) throws Exception {
-		String response = "";
-		String[] meet = {" Nice to meet you!", " Pleased to meet you!", " Glad to meet you!", " Lovely to meet you!"}; 
-	    int randomIndex = (int)Math.floor(Math.random()*(meet.length-1-0+1)+0);
-
-		if (personNER()) {
-			response = "Hello, " +  userName + "!" + meet[randomIndex];
-		}
-		else {
-			response = meet[randomIndex]; 
-		}
-		return response; 
-	}
 
 	// generate responses to questions regarding hobbies
 	public static String hobbyResponse(String s) {
@@ -264,13 +228,8 @@ class Bot {
 		}
 		
 		if (fav.equals("")) 
-			response = generateOutMessage();
+			response = "Sorry, I don't understand your message. Is there anything that you want to talk about (movies, sports, foods or books) ?"; 
 		return response; 
-	}
-	
-	public static String generateOutMessage() {
-	    int randomIndex = (int)Math.floor(Math.random()*(outMessage.length-1-0+1)+0);
-	    return outMessage[randomIndex];
 	}
 	
 	//"movie", "sport", "food", "book"
@@ -329,7 +288,7 @@ class Bot {
 	public static void lemmatize(String[] tokens, String[] tags) {
 		for (int i = 0; i < tags.length; i++) {
 			String t = tags[i]; 
-			String k = tokens[i].toLowerCase(); 
+			String k = tokens[i]; 
 			// if k is a verb
 			if (t.startsWith("V")) {
 				verb.add(k);
@@ -410,7 +369,7 @@ class Bot {
         }
 	}
 	
-	public static boolean personNER() throws Exception{
+	public static void personNER() throws Exception{
 		InputStream inputStream = new FileInputStream("en-ner-person.bin"); 
         TokenNameFinderModel nameModel = new TokenNameFinderModel(inputStream);     
         //Instantiating the NameFinder class 
@@ -419,19 +378,9 @@ class Bot {
         Span personNameSpans[] = nameFinder.find(capitalize(tokens)); 
         // printing method for testing NER feature
 
-        for(Span sp: personNameSpans) {
+        for(Span sp: personNameSpans) 
         	System.out.println("the name is " + sp.toString() + "  " + tokens[sp.getStart()]);
-        	if (tokens[sp.getStart()] != null) {
-        	userName = tokens[sp.getStart()]; 
-        	}
-        }
         
-        if (personNameSpans.length == 0) {
-        	return false;
-        }
-        else {
-        	return true; 
-        }
 	}
 	
 	public static void main(String[] args) throws Exception {

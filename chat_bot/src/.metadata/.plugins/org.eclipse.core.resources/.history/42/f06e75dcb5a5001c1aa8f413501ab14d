@@ -76,15 +76,6 @@ class Bot {
 	//chatbot ending chat messages
     static String endMessage = "It's very nice to chat with you. Looking forward to talking with you next time!";
 	
-    //chatbot can't understand user input
-    static String[] outMessage = {"Hmm, I don't get that. Wanna talk about sports or food with me?", 
-    		"Sorry, I don't understand your message. "
-    		+ "Is there anything that you want to talk about (movies, sports, foods or books) ?",
-    		"Sorry, I don't get this! I would like to discuss any of the following topics that might interest you: movies, sports, foods or books.", 
-    		"Hmm, sorry I don't get that. Do you wanna talk about movies or books with me?",
-    		"Sorry, I don't understand that. Do you want to talk about movies, sports, foods or books?"
-    };
-    
     //tokens
     static String[] tokens = {};
     
@@ -200,14 +191,11 @@ class Bot {
 	
 	public static String discussName (String s) throws Exception {
 		String response = "";
-		String[] meet = {" Nice to meet you!", " Pleased to meet you!", " Glad to meet you!", " Lovely to meet you!"}; 
-	    int randomIndex = (int)Math.floor(Math.random()*(meet.length-1-0+1)+0);
-
 		if (personNER()) {
-			response = "Hello, " +  userName + "!" + meet[randomIndex];
+			response = "Hello, " +  userName + "! Nice to meet you!";
 		}
 		else {
-			response = meet[randomIndex]; 
+			response = "Can I have your name please?"; 
 		}
 		return response; 
 	}
@@ -264,13 +252,8 @@ class Bot {
 		}
 		
 		if (fav.equals("")) 
-			response = generateOutMessage();
+			response = "Sorry, I don't understand your message. Is there anything that you want to talk about (movies, sports, foods or books) ?"; 
 		return response; 
-	}
-	
-	public static String generateOutMessage() {
-	    int randomIndex = (int)Math.floor(Math.random()*(outMessage.length-1-0+1)+0);
-	    return outMessage[randomIndex];
 	}
 	
 	//"movie", "sport", "food", "book"
@@ -329,7 +312,7 @@ class Bot {
 	public static void lemmatize(String[] tokens, String[] tags) {
 		for (int i = 0; i < tags.length; i++) {
 			String t = tags[i]; 
-			String k = tokens[i].toLowerCase(); 
+			String k = tokens[i]; 
 			// if k is a verb
 			if (t.startsWith("V")) {
 				verb.add(k);

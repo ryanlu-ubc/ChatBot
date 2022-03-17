@@ -207,7 +207,7 @@ class Bot {
 			response = "Hello, " +  userName + "!" + meet[randomIndex];
 		}
 		else {
-			response = meet[randomIndex]; 
+			response = meet[randomIndex] + " Is there anything that you want to talk about (movies, sports, foods or books) ?"; 
 		}
 		return response; 
 	}
