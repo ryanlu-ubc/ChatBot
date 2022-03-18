@@ -324,6 +324,9 @@ class Bot {
 		String fav = "";
 		String response = "";	
 		
+		//check verbs: "like", "love"
+		if (!isNegation()) {
+
 		for (int i = 0; i < verb.size(); i ++) {
 			if (verb.get(i).toLowerCase().equals("like") || verb.get(i).toLowerCase().equals("love")) {
 				response = userLikeHobby();
@@ -341,8 +344,7 @@ class Bot {
 				response = userLikeHobby();
 			}
 		}
-		
-		response = generateOutMessage();
+		}
 		
 		return response; 
 	}

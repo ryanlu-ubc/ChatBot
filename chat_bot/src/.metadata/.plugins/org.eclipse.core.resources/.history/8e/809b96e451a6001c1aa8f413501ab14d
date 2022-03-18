@@ -281,16 +281,7 @@ class Bot {
 					return true;
 			}
 		}
-		return false; 
-	}
-	
-	public static boolean whDetected() {
-		if (wh.size() > 0) {
-			for (int i = 0; i < wh.size(); i++) {
-				if (wh.get(i).equals("what") || wh.get(i).equals("how"))
-					return true;
-			}
-		}
+		System.out.println("detected false");
 		return false; 
 	}
 
@@ -301,7 +292,7 @@ class Bot {
 		String[] fav = {"My favourite ", "I like ", "I really like "}; 
 		for (int i = 0; i < noun.size(); i++) {
 			for (int j = 0; j < topicKeyword.length; j++) {
-				if ((noun.get(i).toLowerCase().equals(topicKeyword[j]) || noun.get(i).toLowerCase().equals(topicKeywords[j])) && (youOrYourdetected() || whDetected())) {
+				if ((noun.get(i).toLowerCase().equals(topicKeyword[j]) || noun.get(i).toLowerCase().equals(topicKeywords[j])) && youOrYourdetected()) {
 					lastTopic = topicKeyword[j];
 					int randomIndex = (int)Math.floor(Math.random()*(fav.length-1-0+1)+0);
 					if (randomIndex == 0)
@@ -324,6 +315,9 @@ class Bot {
 		String fav = "";
 		String response = "";	
 		
+		//check verbs: "like", "love"
+		if (!isNegation()) {
+
 		for (int i = 0; i < verb.size(); i ++) {
 			if (verb.get(i).toLowerCase().equals("like") || verb.get(i).toLowerCase().equals("love")) {
 				response = userLikeHobby();
@@ -341,9 +335,7 @@ class Bot {
 				response = userLikeHobby();
 			}
 		}
-		
-		response = generateOutMessage();
-		
+		}
 		return response; 
 	}
 	
@@ -394,7 +386,7 @@ class Bot {
 	
 	public static boolean isQuit(String s) {
 		for (int i = 0; i < endText.length; i++) {
-			if (s.contains(endText[i]))
+			if (s.equals(endText[i]))
 				return true;
 		}
 		return false; 
