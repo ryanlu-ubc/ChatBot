@@ -365,6 +365,7 @@ class Bot {
 			if (randomIndex == 0) response = "I haven't watched this movie before, but I believe it's a good one!";
 			else if (randomIndex == 1) response = "Oh I have watched this movie before! I'm glad you also like it!"; 
 		}
+		
 		else if (lastTopic.equals(topicKeyword[1]) || lastTopic.equals(topicKeywords[1])) {
 			if (randomIndex == 0) response = "I haven't practised this sport before, but it sounds so much fun!";
 			else if (randomIndex == 1) response = "I have tried it before and I also think it's a good one!";
