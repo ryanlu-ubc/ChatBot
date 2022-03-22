@@ -1,0 +1,9 @@
+INDEX VERSION 1.131+/Users/huqingyan/Documents/GitHub/ChatBot/chat_bot/src/.metadata/.plugins/org.eclipse.jdt.core
+2728107262.index
+339970625.index
+1967713191.index
+2305223826.index
+2127240665.index
+3364999344.index
+3868415162.index
+564439505.index
