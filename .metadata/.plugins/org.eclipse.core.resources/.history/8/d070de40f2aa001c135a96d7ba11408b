@@ -434,8 +434,6 @@ class Bot {
 			}
 			// if k is a noun 
 			else if (t.startsWith("N")) {
-				if (k.equals("love"))
-					verb.add(k); 
 				noun.add(k);
 			}
 			// if k is a pronoun
@@ -443,6 +441,9 @@ class Bot {
 				prp.add(k);
 			}
 			else if (t.startsWith("I") && (k.equals("like"))) {
+				verb.add(k);
+			}
+			else if ((k.equals("love"))) {
 				verb.add(k);
 			}
 		}
