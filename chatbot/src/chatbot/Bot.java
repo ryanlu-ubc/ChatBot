@@ -557,6 +557,14 @@ class Bot {
         }
         
 	}
+
+	public static void prepData(String s) throws Exception{
+		tokens = parse(s);
+		POSTagging();
+		personNER();
+		locationNER();
+		lemmatize(tokens, tags);
+	}
 	
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
