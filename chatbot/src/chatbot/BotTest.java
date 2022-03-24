@@ -58,12 +58,14 @@ class BotTest
         Bot.lemmatize(Bot.tokens, Bot.tags);
         
         // possible responses
-        String response1 = "My favorite movie is 'The Godfather'. Which movie do you like the most?";
+        String response1 = "My favourite movie is 'The Godfather'. Which movie do you like the most?";
         String response2 = "I like 'The Godfather' the most. Which movie do you like the most?";
         String response3 = "I really like 'The Godfather'. Which movie do you like the most?";
+                
+        String output = Bot.hobbyResponse("Which movie do you like the most?");
         
         // tset output
-        assertTrue(((response1.equals(Bot.hobbyResponse("Which movie do you like the most?"))) ||(response2.equals(Bot.hobbyResponse("Which movie do you like the most?"))) || (response3.equals(Bot.hobbyResponse("Which movie do you like the most?")))));
+        assertTrue(((response1.equals(output)) ||(response2.equals(output)) || (response3.equals(output))));
        	}
 
 	
