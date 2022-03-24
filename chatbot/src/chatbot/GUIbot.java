@@ -15,6 +15,7 @@ public class GUIbot {
 			try {
 				Bot.prepData(s);
 				response = Bot.generateResponse(s);
+				Bot.clearAllAL();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
