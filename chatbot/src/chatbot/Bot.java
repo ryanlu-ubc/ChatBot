@@ -556,6 +556,14 @@ class Bot {
         }
         
 	}
+
+	public static void prepData(String s) throws Exception{
+		tokens = parse(s);
+		POSTagging();
+		personNER();
+		locationNER();
+		lemmatize(tokens, tags);
+	}
 	
 
 	
@@ -584,7 +592,7 @@ class Bot {
 				  }
 			
 		}
-		
+		sc.close();
 	}
 }
 
