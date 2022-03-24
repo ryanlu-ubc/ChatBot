@@ -116,7 +116,7 @@ public class Bot {
 							response = "I'm glad you're doing well today."; 
 							}
 						else if (tokens[i].toLowerCase().equals("terrible") || tokens[i].toLowerCase().equals("depressed") ||tokens[i].toLowerCase().equals("mad") || tokens[i].toLowerCase().equals("sad")) {
-							response = "I'm here with you. Remeber? You can always come to me and share with me."; 
+							response = "I'm here with you. Remember? You can always come to me and share with me."; 
 							situation = 1;
 							}
 						else if (tokens[i].toLowerCase().equals("dying") || tokens[i].toLowerCase().equals("suicidal") || tokens[i].toLowerCase().equals("painful")) {
