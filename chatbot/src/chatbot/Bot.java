@@ -595,7 +595,7 @@ class Bot {
 				  }
 			
 		}
-		
+		sc.close();
 	}
 }
 
