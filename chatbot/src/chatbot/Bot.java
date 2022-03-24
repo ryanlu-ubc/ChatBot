@@ -524,7 +524,6 @@ class Bot {
         	}
         }
         
-       
         if (personNameSpans.length == 0) {
         	return false;
         }
@@ -558,6 +557,8 @@ class Bot {
         
 	}
 	
+
+	
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("You: \t");
@@ -565,24 +566,12 @@ class Bot {
 		
 		while (true) {
 				  if (!isQuit(s)) {
-					  	
-					  	tokens = parse(s);
-					  	
-					  	//POS tagging
-			            POSTagging();
 					
-			            //person named entity recognition 
-			            personNER();
-			            
-			            //location
-			            locationNER();
-			            
-			            //categorize terms based on their lemmas
-			            lemmatize(tokens, tags);
-			            
-			            //print each lemma arraylist for testing 
-			            //printAL();
-  
+					  	tokens = parse(s);
+				        POSTagging();
+				        personNER();
+				        locationNER();
+				        lemmatize(tokens, tags);  
 					System.out.print("Bot: \t");
 					System.out.println(generateResponse(s)); 
 					System.out.print("You: \t");

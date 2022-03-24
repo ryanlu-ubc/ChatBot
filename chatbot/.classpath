@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="en-ner-person.bin"/>
 	<classpathentry kind="lib" path="en-pos-maxent.bin"/>
 	<classpathentry kind="lib" path="en-token.bin"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
