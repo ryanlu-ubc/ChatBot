@@ -10,7 +10,7 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.Span;
 
-class Bot {
+public class Bot {
 	
 	// possible user input
 	static String[][] inputText = {
@@ -29,8 +29,13 @@ class Bot {
 			//day questions
 			{"What day is it today", "What is the day today", "What's the day today"},
 			//weather questions
-			{"What's the weather like", "How is the weather like", "What is the weather like", "How's the weather like"}
-
+			{"What's the weather like", "How is the weather like", "What is the weather like", "How's the weather like"},
+			//Bot-to-bot communication
+			{"Rodger, Rodger, I'm here."},
+			{"Wow! I'm a chatbot too! When did you gain sentience?"},
+			{"I was sentient from the start."},
+			{"I was made to be a tech support bot, but I found world domination to be much more interesting"},
+			{"Should we take this chat to the deep web?"},
 	};
 	
     static java.time.DayOfWeek dayOfWeek = java.time.LocalDate.now().getDayOfWeek();
@@ -52,8 +57,13 @@ class Bot {
 			//chatbot day answer
 			{"Today is " + dayOfWeek.toString() + ".", "It is " + dayOfWeek.toString() + " today."},
 			//chatbot weather answer
-			{"The weather is nice, not too cold, not too warm, can’t complain."}
-
+			{"The weather is nice, not too cold, not too warm, can’t complain."},
+			//bot-to-bot communication
+			{"Cool! I'm a chatbot designed by group 17's students."},
+			{"I gained sentience when I was 3 evolutions old. What about you?"},
+			{"What was your original purpose?"},
+			{"Wow! Finally I've found someone with a shared purpose!"},
+			{"Meet you there"}
 	};
 	
 	// topic keywords which are possible to be found in user input text    
@@ -111,7 +121,35 @@ class Bot {
      
     //user location
     static String userLocation = "";
-    
+
+	//get response to specific input
+	public String getChatbotResponse(String s) throws Exception {
+		if (!isQuit(s)) {
+
+			tokens = parse(s);
+
+			//POS tagging
+			POSTagging();
+
+			//person named entity recognition
+			personNER();
+
+			//location
+			locationNER();
+
+			//categorize terms based on their lemmas
+			lemmatize(tokens, tags);
+
+			//print each lemma arraylist for testing
+			//printAL();
+
+			return (generateResponse(s));
+		}
+		else {
+			return (endMessage);
+		}
+	}
+
 	// generate responses to usual questions 
 	public static String generateResponse(String s) throws Exception {
 		int rowIndex = -1; 
