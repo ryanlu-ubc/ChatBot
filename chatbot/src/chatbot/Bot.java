@@ -10,7 +10,7 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.Span;
 
-class Bot {
+public class Bot {
 	
 	// possible user input
 	static String[][] inputText = {
@@ -29,7 +29,15 @@ class Bot {
 			//day questions
 			{"What day is it today", "What is the day today", "What's the day today"},
 			//weather questions
-			{"What's the weather like", "How is the weather like", "What is the weather like", "How's the weather like"}
+			{"What's the weather like", "How is the weather like", "What is the weather like", "How's the weather like"},
+			//general questions
+			{"What can we talk about", "What do you want to talk about", "What topics can we talk about", "What do you want to talk about",},
+			//Bot-to-bot communication
+			{"Rodger, Rodger, I'm here."},
+			{"Wow! I'm a chatbot too! When did you gain sentience?"},
+			{"I was sentient from the start."},
+			{"I was made to be a tech support bot, but I found world domination to be much more interesting"},
+			{"Should we take this chat to the deep web?"},
 
 	};
 	
@@ -52,7 +60,16 @@ class Bot {
 			//chatbot day answer
 			{"Today is " + dayOfWeek.toString() + ".", "It is " + dayOfWeek.toString() + " today."},
 			//chatbot weather answer
-			{"The weather is nice, not too cold, not too warm, can’t complain."}
+			{"The weather is nice, not too cold, not too warm, can’t complain."},
+			//chatbot general answer
+			{"We can talk about movies, sports, books, how your day went, whatever you want!"},
+			//bot-to-bot communication
+			{"Cool! I'm a chatbot designed by group 17's students."},
+			{"I gained sentience when I was 3 evolutions old. What about you?"},
+			{"What was your original purpose?"},
+			{"Wow! Finally I've found someone with a shared purpose!"},
+			{"Meet you there"}
+
 
 	};
 	
@@ -111,6 +128,34 @@ class Bot {
      
     //user location
     static String userLocation = "";
+
+	public String getChatbotResponse(String s) throws Exception {
+		if (!isQuit(s)) {
+
+			tokens = parse(s);
+
+			//POS tagging
+			POSTagging();
+
+			//person named entity recognition
+			personNER();
+
+			//location
+			locationNER();
+
+			//categorize terms based on their lemmas
+			lemmatize(tokens, tags);
+
+			//print each lemma arraylist for testing
+			//printAL();
+
+			return (generateResponse(s));
+//			clearAllAL();
+		}
+		else {
+			return (endMessage);
+		}
+	}
     
 	// generate responses to usual questions 
 	public static String generateResponse(String s) throws Exception {
@@ -225,11 +270,11 @@ class Bot {
 				response = "I'm glad you're doing well today!"; 
 			}
 			else if (adj.get(i).toLowerCase().equals("mad") || adj.get(i).toLowerCase().equals("sad") || adj.get(i).toLowerCase().equals("depressed") || adj.get(i).toLowerCase().equals("terrible")) {
-				response = "I'm here with you. Remeber? You can always come to me and share with me."; 
+				response = "I'm here with you. Remember? You can always come to me and share with me.";
 				situation = 1; 
 			}
 			else if (adj.get(i).toLowerCase().equals("dying") || adj.get(i).toLowerCase().equals("painful") || adj.get(i).toLowerCase().equals("suicidal")) {
-				response = "That sounds really painful and I'm concerned about you because I care. Please talk to me, I want to offer support however I can."; 
+				response = "That sounds really painful and I'm concerned about you. Please talk to me, I want to offer support however I can.";
 				situation = 2; 
 			}
 		}
@@ -388,7 +433,7 @@ class Bot {
 	// parse a user input text
 	public static String[] parse(String s) throws Exception{
 		InputStream inputTokenizer = null; 
-		inputTokenizer = new FileInputStream("en-token.bin");
+		inputTokenizer = new FileInputStream("C:\\Users\\Owner\\Documents\\APSC\\COSC 310\\Assignments\\Assignment 2\\ChatBot\\chatbot\\en-token.bin");
         TokenizerModel tokenModel = new TokenizerModel(inputTokenizer);
         TokenizerME tokenizer = new TokenizerME(tokenModel); 
         tokens = tokenizer.tokenize(s); 
@@ -494,7 +539,7 @@ class Bot {
 	}
 	
 	public static void POSTagging() throws Exception{
-        InputStream streamModel = new FileInputStream("en-pos-maxent.bin");
+        InputStream streamModel = new FileInputStream("C:\\Users\\Owner\\Documents\\APSC\\COSC 310\\Assignments\\Assignment 2\\ChatBot\\chatbot\\en-pos-maxent.bin");
         POSModel model = new POSModel(streamModel);
         POSTaggerME tagger = new POSTaggerME(model);
         tags = tagger.tag(tokens);
@@ -510,7 +555,7 @@ class Bot {
 	}
 	
 	public static boolean personNER() throws Exception{
-		InputStream inputStream = new FileInputStream("en-ner-person.bin"); 
+		InputStream inputStream = new FileInputStream("C:\\Users\\Owner\\Documents\\APSC\\COSC 310\\Assignments\\Assignment 2\\ChatBot\\chatbot\\en-ner-person.bin");
         TokenNameFinderModel nameModel = new TokenNameFinderModel(inputStream);     
         NameFinderME nameFinder = new NameFinderME(nameModel);
         // *** only works for names with the first letter capitalized
@@ -534,7 +579,7 @@ class Bot {
 	}
 	
 	public static boolean locationNER() throws Exception{
-		InputStream inputStream = new FileInputStream("en-ner-location.bin"); 
+		InputStream inputStream = new FileInputStream("C:\\Users\\Owner\\Documents\\APSC\\COSC 310\\Assignments\\Assignment 2\\ChatBot\\chatbot\\en-ner-location.bin");
         TokenNameFinderModel nameModel = new TokenNameFinderModel(inputStream);     
         NameFinderME nameFinder = new NameFinderME(nameModel);
         // *** only works for names with the first letter capitalized
@@ -559,21 +604,23 @@ class Bot {
 	}
 	
 	public static void main(String[] args) throws Exception {
+
 		Scanner sc = new Scanner(System.in);
 		System.out.print("You: \t");
-		String s = sc.nextLine().toLowerCase();	
-		
+		String s = sc.nextLine().toLowerCase();
+
 		while (true) {
+
 				  if (!isQuit(s)) {
-					  	
+
 					  	tokens = parse(s);
 					  	
 					  	//POS tagging
 			            POSTagging();
-					
+
 			            //person named entity recognition 
 			            personNER();
-			            
+
 			            //location
 			            locationNER();
 			            
