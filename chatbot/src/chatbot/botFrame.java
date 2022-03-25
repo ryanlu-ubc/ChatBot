@@ -15,28 +15,7 @@ public class botFrame extends GUIbot implements ActionListener{
 	JTextArea test = new JTextArea();
 
 	static String message = null;
-	static String output = "";
-	
-	static String[][] inputText = {
-			//standard greetings
-			{"Hi", "Hello", "Hey", "Hola", "Ola"},
-			//question greetings
-			{"How are you", "What's up", "Sup", "How r you", "How r u", "How are u"},
-			//age questions
-			{"How old are you", "How old are u", "How old r you", "How old r u"},
-			//name questions
-			{"What is your name", "What's your name", "Do you have a name"},
-			//location questions 
-			{"Where do you live", "Where are you located", "Where do u live", "Where are u located", "Where r you located", "Where r u located"},
-			//date questions
-			{"What's the date today", "What is the date today"},
-			//day questions
-			{"What day is it today", "What is the day today", "What's the day today"},
-			//weather questions
-			{"What's the weather like", "How is the weather like", "What is the weather like", "How's the weather like"}
-	};
-			
-			
+	static String output = "";	
 	
 	botFrame(){
 		createFrame();
@@ -70,17 +49,9 @@ public class botFrame extends GUIbot implements ActionListener{
 	public void addChatBox() {
 		frame.add(chatBox);
 		chatBox.setBounds(60, 400, 500, 150);
-		
-//		outputBox.setEditable(false);
-//		frame.add(outputBox);
-//		
+
 		test.setEditable(false);
 		frame.add(test);
-		
-//		JScrollPane scrollOutputBox = new JScrollPane(outputBox,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-//		frame.add(scrollOutputBox);
-//		scrollOutputBox.setBounds(60, 50, 500, 150);
-		
 		
 		JScrollPane scrollOutputBox = new JScrollPane(test,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		frame.add(scrollOutputBox);
@@ -97,7 +68,7 @@ public class botFrame extends GUIbot implements ActionListener{
 	}
 
 	public void answer(String s) {
-		test.append("test: " + s + "\n");
+		test.append("Bot: " + s + "\n");
 		chatBox.setText("");
 	}
 
@@ -115,16 +86,6 @@ public class botFrame extends GUIbot implements ActionListener{
 			test.append("ME: " + message + "\n");
 			chatBox.setText("");
 			userResponded(message);
-//			outputBox.setText(message);
-
-//			if(message.contains(inputText)) {
-//				test.append("TEST \n");  
-//			}
-			
-			if(message.contains("Hello")) {
-				test.append("TEST: Hi \n");  
-			}
-			
 			
 		}
 		
