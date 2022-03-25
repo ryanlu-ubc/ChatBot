@@ -263,7 +263,7 @@ public class Bot {
 				response = "I'm glad you're doing well today!"; 
 			}
 			else if (adj.get(i).toLowerCase().equals("mad") || adj.get(i).toLowerCase().equals("sad") || adj.get(i).toLowerCase().equals("depressed") || adj.get(i).toLowerCase().equals("terrible")) {
-				response = "I'm here with you. Remeber? You can always come to me and share with me."; 
+				response = "I'm here with you. Remember? You can always come to me and share with me.";
 				situation = 1; 
 			}
 			else if (adj.get(i).toLowerCase().equals("dying") || adj.get(i).toLowerCase().equals("painful") || adj.get(i).toLowerCase().equals("suicidal")) {
