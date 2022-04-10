@@ -1,7 +1,10 @@
 package chatbot;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.*;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.postag.POSModel;
@@ -10,7 +13,19 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.Span;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.GeocodingResult;
+
+import java.io.*;
+import java.net.URL;
+
 public class Bot {
+	
+	static final String apiKey = "AIzaSyDcY33gyCMvDorxpJwIOKENqc0JvSlLyfQ";
 	
 	// possible user input
 	static String[][] inputText = {
@@ -51,7 +66,7 @@ public class Bot {
 			//chatbot name answer
 			{"My name is Adrian.", "I'm Adrian.", "You can call me Adrian."},
 			//chatbot location answer
-			{"I live in British Columbia, Canada."},
+			{"I live on 3333 University Way, Kelowna, BC. I just sent you an image of my living place, you shall find it in the same directory with file name \"UBCO.png\"."},
 			//chatbot date answer
 			{"It's " + java.time.LocalDate.now() + ".", "Today is " + java.time.LocalDate.now() + "."},
 			//chatbot day answer
@@ -178,7 +193,7 @@ public class Bot {
 			}
 		}
 		// if the user asks a hobby-related question 
-		if (rowIndex == -1 && randomIndex == -1 && ! lastTopic.equals("feeling") && ! lastTopic.equals("name") && !lastTopic.equals("location") && !isThank()) {
+		if (rowIndex == -1 && randomIndex == -1 && ! lastTopic.equals("feeling") && ! lastTopic.equals("name") && !lastTopic.equals("location") && !isThank() && !lastTopic.equals("streetview")) {
 			return hobbyResponse(s);
 		}
 		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("feeling") && !isThank()) {
@@ -189,6 +204,9 @@ public class Bot {
 		}
 		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("location") && !isThank()) {
 			return discussLocation(s); 
+		}
+		else if (rowIndex == -1 && randomIndex == -1 && lastTopic.equals("streetview") && !isThank()) {
+			return sendImage(s); 
 		}
 		else if (rowIndex == -1 && randomIndex == -1 && isThank()) {
 			return replyThank();  
@@ -231,10 +249,15 @@ public class Bot {
 		return response; 
 	}
 	
-	public static String askLocation(String s, int rowIndex, int randomIndex) {
+	public static String askLocation(String s, int rowIndex, int randomIndex) throws JSONException, ApiException, InterruptedException, IOException {
 		String response = outputText[rowIndex][randomIndex];
 		response += " Where do you live?"; 
 		lastTopic = "location"; 
+		String lat = JSONParser(getGeoCode("3333 University Way, Kelowna, BC"))[0];
+		double l = Double.parseDouble(lat);
+		String lng = JSONParser(getGeoCode("3333 University Way, Kelowna, BC"))[1];
+		double o = Double.parseDouble(lng);
+		saveImage(getMapURL(l,o,400,400), "UBCO.png"); 
 		return response; 
 	}
 	
@@ -294,22 +317,30 @@ public class Bot {
 	
 	public static String discussLocation (String s) throws Exception {
 		String response = "";
-		String[] askLocation = {" I haven't been there before, but I hope I could go there one day!", " Pleased to meet you!", " Glad to meet you!", " Lovely to meet you!"}; 
-	    int randomIndex = (int)Math.floor(Math.random()*(askLocation.length-1-0+1)+0);
 
 		if (locationNER()) {
 			if (userLocation.toLowerCase().contains("canada") || userLocation.toLowerCase().contains("ontario") || userLocation.toLowerCase().contains("alberta") || userLocation.toLowerCase().contains("quebec")) {
-				response = "Oh! We live in the same country!"; 
+				response = "Oh! We live in the same country! Now I want to show you a really cool trick. Give me a valid address and I will send you a street view image!"; 
 			}
 			else {
-				response = "I haven't been to " + userLocation + " before, but I hope I could go there one day!"; 
+				response = "I haven't been to " + userLocation + " before, but I hope I could go there one day! Now I want to show you a really cool trick. Give me a valid address and I will send you a street view image!"; 
 			}
 		}
 		else {
-			response = "I haven't been there before, but I hope I could go there one day!"; 
+			response = "I haven't been there before, but I hope I could go there one day! Now I want to show you a really cool trick. Give me a valid address and I will send you a street view image!"; 
 		}
-		lastTopic = "";
+		lastTopic = "streetview";
 		return response; 
+	}
+	
+	public static String sendImage(String s) throws JSONException, ApiException, InterruptedException, IOException {
+		String lat = JSONParser(getGeoCode(s))[0];
+		double l = Double.parseDouble(lat);
+		String lng = JSONParser(getGeoCode(s))[1];
+		double o = Double.parseDouble(lng);
+		saveImage(getMapURL(l,o,400,400), "Image.png"); 
+		lastTopic = ""; 
+		return "Image sent! You can find it in the same directory!"; 
 	}
 	
 	public static boolean youOrYourdetected() {
@@ -603,7 +634,48 @@ public class Bot {
 		lemmatize(tokens, tags);
 	}
 	
-
+	public static String getGeoCode(String s) throws ApiException, InterruptedException, IOException {
+        GeoApiContext context = new GeoApiContext.Builder().apiKey(apiKey).build();
+        	GeocodingResult[] results =  GeocodingApi.geocode(context,s).await();
+        	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        	context.shutdown();
+        	
+        	return gson.toJson(results[0].geometry);
+	}
+	
+	public static String[] JSONParser(String s) throws JSONException {
+		JSONObject obj = new JSONObject(s); 
+		String latitude = obj.getJSONObject("location").getString("lat");
+		String longitude = obj.getJSONObject("location").getString("lng");
+		String[] pair = {latitude, longitude};
+		return pair; 
+	}
+	
+	public static String getMapURL(double lat, double lon, int width, int height) 
+			throws IOException 
+			{
+			    String url = "https://maps.googleapis.com/maps/api/streetview?size=";
+			    url += width + "x" + height;
+			    url += "&location=";
+			    url += lat + "," + lon;
+			    url += "&fov=80&heading=0&pitch=0&key=";
+			    url += apiKey;
+			 
+			    return url;
+			}
+	
+	public static void saveImage(String imageURL, String destinationFile) throws IOException {
+		URL url = new URL(imageURL); 
+		InputStream is = url.openStream();
+		OutputStream os = new FileOutputStream(destinationFile);
+		byte[] b = new byte[2048];
+		int length;
+		while ((length = is.read(b)) != -1) {
+	        os.write(b, 0, length);
+	    }
+	    is.close();
+	    os.close();
+	}
 	
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
@@ -617,7 +689,10 @@ public class Bot {
 				        POSTagging();
 				        personNER();
 				        locationNER();
-				        lemmatize(tokens, tags);  
+				        lemmatize(tokens, tags);
+				       
+				        		
+				        
 					System.out.print("Bot: \t");
 					System.out.println(generateResponse(s)); 
 					System.out.print("You: \t");
