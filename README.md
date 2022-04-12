@@ -1,6 +1,36 @@
-# ChatBot
-ChatBot for Assignment 2
+### Final Project - Individual Assignment
+> RYAN SOON HAN LU 82078023
 
+# Conversational Agent
+
+#### Updated README.md
+
+### List of Incorporated APIs
+-	Google Geocoding API
+-	Google Street View Static API
+
+### Project Description
+
+The objective of this programming project is to enhance the functionality of the conversational agent by incorporating two public APIs into the project. The APIs I have chosen are the Google Geocoding API and the Google Street View Static API. The reason I have selected to incorporate these two APIs into the project is because I can combine the output of the two APIs to create a unique feature.
+
+### API 1: Google Geocoding API
+Within the conversation between the user and the dialogue agent, the user may ask the chatbot about its current location, such as “where do you live?”, then the program will output “3333 University Way, Kelowna, BC” at the same time, the program will request the Google Geocoding API to convert the address above to its corresponding geographic coordinates. The output of the API will be in JSON, so I used JSON parser to extract latitude and longitude from it. 
+
+### API 2: Google Street View Static API
+Based on the extracted geographic coordinates produced by the Geocoding API, I incorporated the Google Street View Static API to obtain a static image of the geographic location by specifying latitude and longitude parameters in a URL, which is sent through a standard HTTP request. This image is saved in the same directory as the program. By using this technique, I have incorporated an extra feature where the chatbot will ask the user for an address. If the user enters a valid address, the program will produce a corresponding street view image of the address. The image is then saved locally into the user’s computer.
+
+#### Sample output:
+Input: 3333 University Way, Kelowna, BC
+
+Output:
+
+![UBCO](https://user-images.githubusercontent.com/77523948/162879253-a4807a18-6785-49de-96a2-e2f68c62a349.png)
+
+
+<br>
+<br>
+
+***
 
 Project Description:
 
